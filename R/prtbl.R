@@ -18,5 +18,5 @@
 
 
 prtbl <- function(x) {
-  return("Szeretlek")
+  knitr::kable(x)
 }
