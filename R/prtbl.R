@@ -18,5 +18,5 @@
 
 
 prtbl <- function(x) {
-  x^3
+  return("Szeretlek")
 }
