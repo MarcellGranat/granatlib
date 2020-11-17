@@ -2,26 +2,49 @@
 % Please edit documentation in R/prtbl.R
 \name{prtbl}
 \alias{prtbl}
-\title{overview_tab}
+\title{prtbl}
 \usage{
-prtbl(x)
+prtbl(
+  df,
+  c = "",
+  hun = TRUE,
+  digits = 2,
+  format.args = NULL,
+  align = NULL,
+  un = TRUE,
+  ufc = F,
+  row.names = FALSE,
+  escape = TRUE
+)
 }
 \arguments{
-\item{dat}{A data set object}
+\item{c}{Caption to output ("")}
 
-\item{id}{Scope (e.g., country codes or individual IDs)}
+\item{hun}{Logical; Common words should be translated to Hungarian? (TRUE)}
 
-\item{time}{Time (e.g., time periods are given by years, months, ...)}
+\item{digits}{Number of digits to shown (2)}
+
+\item{format.args}{Decimal mark is set to "," by default if hun is TRUE (NULL)}
+
+\item{align}{(NULL)}
+
+\item{un}{Logical; Names should start with upper case? (TRUE)}
+
+\item{ufc}{Logical; First column should start with upper case? (TRUE)}
+
+\item{row.names}{Logical; Print row names? (FALSE)}
+
+\item{escape}{Logical (TRUE)}
 }
 \value{
-A data frame object that contains a summary of a sample that
-    can later be converted to a TeX output using \code{overview_print}
+A character vector of the table source code. \code{overview_print}
 }
 \description{
-Provides an overview table for the time and scope conditions of
-    a data set
+Print tables based on knitr::kable() function, with
+prefered default setup (for Hungarian language)
 }
 \examples{
-data(toydata)
-output_table <- overview_tab(dat = toydata, id = ccode, time = year)
+df <- broom::tidy(lm(data = cars, formula = speed ~ dist))
+prtbl(df, hun = F)
+prtbl(df, hun = T)
 }
