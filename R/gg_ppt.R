@@ -4,7 +4,6 @@
 #' @param x A gg object (.last.value)
 #' @param filename Name of the slide. '.pptx' is redundant here. (plot)
 #'
-#'\code{overview_print}
 #' @examples
 #' ggplot(cars, aes(speed, dist)) + geom_point()
 #' gg_ppt()
