@@ -1,4 +1,4 @@
-# granatlib <img src="man/figures/logo.svg" align="right" />
+# granatlib <img src="man/figures/logo.svg" align="right" width="120" height="140" />
 
 Personal R package.
 
