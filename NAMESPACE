@@ -2,5 +2,7 @@
 
 export(cramer)
 export(gg_ppt)
+export(plot3D)
 export(prtbl)
+export(theme_granat)
 export(tile)
