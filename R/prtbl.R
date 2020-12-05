@@ -42,7 +42,8 @@ prtbl <- function(df, c = "", hun = TRUE, digits = 2, format.args = NULL, align 
   }
   if (un == T) names(df) <- stringr::str_to_title(names(df))
   if (hun == T) {
-    df$Term <- ifelse(df$Term == "(Intercept)", "konstans", df$Term)
+    if ("Term" %in% names(df)) df$Term <- ifelse(df$Term == "(Intercept)", "konstans", df$Term)
+    if ("term" %in% names(df)) df$term <- ifelse(df$term == "(Intercept)", "konstans", df$term)
     names(df) <- dplyr::case_when(
       names(df) == "Term" ~ "Változó",
       names(df) == "Value" ~ "Érték",
