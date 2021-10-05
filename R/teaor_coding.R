@@ -1,4 +1,4 @@
-recode_teaor <- function(teaor_code, type = "name", level = 4, help = FALSE) {
+teaor_coding <- function(teaor_code, type = "name", level = 4, help = FALSE) {
   # recode teaor code by teaor str >> type: code/name, level: 1-4
   teaor_str <- tibble::tribble(
     ~code, ~code1, ~code2, ~code3, ~code4,                                                                                          ~name1,                                                                                 ~name2,                                                                      ~name3,                                                                                                  ~name4,
@@ -1001,7 +1001,7 @@ recode_teaor <- function(teaor_code, type = "name", level = 4, help = FALSE) {
     NA,    "U",     NA,     NA,     NA,                                                                    "Területen kívüli szervezet",                                                                                     NA,                                                                          NA,                                                                                                      NA
   )
 
-  if (as_table) {
+  if (help) {
 
     teaor_str
 
