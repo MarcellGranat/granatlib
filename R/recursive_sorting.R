@@ -1,4 +1,4 @@
-recursive_sorting <- function(.data, n_groups = 1, self_sorting = FALSE) {
+recursive_sorting <- function(.data, n_groups = 2, self_sorting = FALSE) {
   sorting <- function(.data, n_groups = 2) {
     if (nrow(.data) > 0) {
 
@@ -54,8 +54,12 @@ recursive_sorting <- function(.data, n_groups = 1, self_sorting = FALSE) {
         map(select, 3) %>%
         map(~ bind_rows(tibble(group = as.character(NA)), .)) %>%
         bind_rows() %>%
+        {bind_cols(select(current_data, 1:2, old_group = last_col()), .)} %>%
+        mutate(group = ifelse(is.na(group), old_group, group)) %>%
+        select(group) %>%
         rename_all(str_c, i) %>%
         {bind_cols(current_data, .)}
+
     }
   }
 
