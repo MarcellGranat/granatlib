@@ -19,21 +19,27 @@ create_pb <- function(.data, n = NULL) {
 
   library(progress)
   if (is.null(n)) {
-    pb <<- progress_bar[["new"]](format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
-                                 total = nrow(.data),
-                                 complete = "=",
-                                 incomplete = "-",
-                                 current = ">",
-                                 clear = FALSE,
-                                 width = 100)
+    pb <- progress_bar[["new"]](format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
+                                total = nrow(.data),
+                                complete = "=",
+                                incomplete = "-",
+                                current = ">",
+                                clear = FALSE,
+                                width = 100)
+
+    assign("pb", pb, envir = rlang::env_parent())
+    message(crayon::green("pb created"))
     .data
   } else {
-    pb <<- progress_bar[["new"]](format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
-                                 total = n,
-                                 complete = "=",
-                                 incomplete = "-",
-                                 current = ">",
-                                 clear = FALSE,
-                                 width = 100)
+    pb <- progress_bar[["new"]](format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
+                                total = n,
+                                complete = "=",
+                                incomplete = "-",
+                                current = ">",
+                                clear = FALSE,
+                                width = 100)
+
   }
+  assign("pb", pb, envir = rlang::env_parent())
+  message(crayon::green("pb created"))
 }
