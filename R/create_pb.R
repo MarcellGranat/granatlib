@@ -28,11 +28,15 @@ create_pb <- function(.data, n = NULL) {
                                 width = 100)
 
     assign("pb", pb, envir = rlang::global_env())
+
     if (!exists("pb")) {
       assign("pb", pb, envir = rlang::env_parent())
     }
+
     message(crayon::green("pb created"))
-    .data
+
+    return(.data) # return the input
+
   } else {
     pb <- progress_bar[["new"]](format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
                                 total = n,
@@ -42,8 +46,8 @@ create_pb <- function(.data, n = NULL) {
                                 clear = FALSE,
                                 width = 100)
 
+    assign("pb", pb, envir = rlang::global_env())
+    if (!exists("pb")) assign("pb", pb, envir = rlang::env_parent())
+    message(crayon::green("pb created"))
   }
-  assign("pb", pb, envir = rlang::global_env())
-  if (!exists("pb")) assign("pb", pb, envir = rlang::env_parent())
-  message(crayon::green("pb created"))
 }
