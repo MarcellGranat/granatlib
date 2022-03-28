@@ -24,6 +24,7 @@ create_pb <- function(.data, n = NULL) {
                                 complete = "=",
                                 incomplete = "-",
                                 current = ">",
+                                force = TRUE,
                                 clear = FALSE,
                                 width = 100)
 
@@ -43,6 +44,7 @@ create_pb <- function(.data, n = NULL) {
                                 complete = "=",
                                 incomplete = "-",
                                 current = ">",
+                                force = TRUE,
                                 clear = FALSE,
                                 width = 100)
 
