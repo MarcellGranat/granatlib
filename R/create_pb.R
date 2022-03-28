@@ -28,7 +28,9 @@ create_pb <- function(.data, n = NULL) {
                                 width = 100)
 
     assign("pb", pb, envir = rlang::global_env())
-    if (!exists("pb")) assign("pb", pb, envir = rlang::env_parent())
+    if (!exists("pb")) {
+      assign("pb", pb, envir = rlang::env_parent())
+    }
     message(crayon::green("pb created"))
     .data
   } else {
