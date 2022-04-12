@@ -70,26 +70,37 @@ splitted_mutate <- function(.data, ..., split_number = 100, .keep = NULL, cores 
     }
   } else {
 
-    library(furrr)
-    plan(multicore, workers = cores)
+    dots <- list(...)
 
     l <- .data %>%
       mutate(g = cut(row_number(), split_number, FALSE)) %>%
       group_by(g) %>%
       group_split(.keep = FALSE)
 
-    out <- future_map(l, .f = function(x) {
+    cl <- makeCluster(cores)
 
-      current_result <- mutate(x, ...) # FIXME
+    clusterEvalQ(cl, expr = library(tidyverse))
+    clusterEvalQ(cl, expr = library(stringr))
+    clusterEvalQ(cl, expr = library(dplyr))
+    clusterEvalQ(cl, expr = library(tidyr))
+    clusterEvalQ(cl, expr = library(purrr))
+    clusterEvalQ(cl, expr = library(tibble))
+    clusterEvalQ(cl, expr = library(forcats))
+
+    clusterExport(cl=cl, varlist=c("l", "dots", ".keep", ".data", "pb"), envir=environment())
+
+    out <- parallel::parLapply(cl, X = l,  function(x) {
+
+      mutate(x, ...)
 
       if (!is.null(.keep)) { # remove cols >> save memory
         current_result <- current_result %>%
           select(names(.data), .keep)
       }
       pb$tick()
-      current_result
-    }) %>%
-      bind_rows()
+    })
+    stopCluster(cl)
+    out <- bind_rows(out)
   }
 
   out
