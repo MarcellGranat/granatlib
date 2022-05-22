@@ -1,44 +1,23 @@
 #' @title create_pb
 #'
-#' @description Create progress bar. If a .data is specified, then create pb with same steps as rows in .data. This is useful for using maps inside dpylr functions. Use n in other cases.
-#' @param .data Data frame
-#' @param n Number of steps (NULL by default)
-#'
-#' @return .data \code{overview_print}
+#' @description Create progress bar.
 #' @examples
-#' create_pb()
+#' create_pb(100)
 #' @export
 #'
 
-create_pb <- function(.data, n = NULL) {
-  if (is.null(n)) {
-    if (!is.data.frame(.data)) {
-      stop(crayon::bgRed(".data must be a data.frame!"))
-    }
+create_pb <- function(x) {
+
+  if (is.data.frame(x)) {
+    n = nrow(x)
+  } else if (is.numeric(x) & length(x) == 1) {
+    n = x
+  } else {
+    n = length(x)
   }
 
   library(progress)
-  if (is.null(n)) {
-    pb <- progress_bar[["new"]](format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
-                                total = nrow(.data),
-                                complete = "=",
-                                incomplete = "-",
-                                current = ">",
-                                force = TRUE,
-                                clear = FALSE,
-                                width = 100)
 
-    assign("pb", pb, envir = rlang::global_env())
-
-    if (!exists("pb")) {
-      assign("pb", pb, envir = rlang::env_parent())
-    }
-
-    message(crayon::green("pb created"))
-
-    return(.data) # return the input
-
-  } else {
     pb <- progress_bar[["new"]](format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
                                 total = n,
                                 complete = "=",
@@ -51,5 +30,5 @@ create_pb <- function(.data, n = NULL) {
     assign("pb", pb, envir = rlang::global_env())
     if (!exists("pb")) assign("pb", pb, envir = rlang::env_parent())
     message(crayon::green("pb created"))
-  }
+
 }
