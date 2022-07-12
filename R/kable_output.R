@@ -9,7 +9,7 @@
 #'
 
 kable_output <- function (.data, align = NULL, round_digits = NULL, plus_sign = FALSE,
-                           hun = FALSE, same_digits = FALSE, verticals = FALSE, .keep_lines = c(1, 2, -1), ...)
+                          hun = FALSE, same_digits = FALSE, verticals = FALSE, .keep_lines = c(1, 2, -1), force_large = FALSE, caption = NULL, ...)
 {
   x <- ungroup(.data)
   numeric_cols <- select_if(x, is.numeric) %>% names()
@@ -68,5 +68,30 @@ kable_output <- function (.data, align = NULL, round_digits = NULL, plus_sign = 
     message(crayon::bgGreen("Table copied to clipboard in latex format!"))
   }, error = function(e) {
   })
-  knitr::kable(x, ..., align = align)
+
+  if (knitr::is_html_output()) {
+    if (nrow(.data) > 10) {
+
+      dt_out <- DT::datatable(x, selection = 'none', caption = caption)
+
+      if (!is.null(round_digits)) {
+        numeric_cols <- .data %>%
+          map_lgl(is.numeric) %>%
+          which()
+
+        dt_out <- DT::formatRound(dt_out, numeric_cols, digits = round_digits)
+
+      }
+
+      dt_out
+    } else {
+      knitr::kable(x, ..., align = align, caption = caption)
+    }
+  } else if (knitr::is_latex_output()) {
+    if (nrow(.data) < 30 | force_large) {
+      knitr::kable(x, ..., align = align, caption = caption)
+    }
+  } else {
+    .data
+  }
 }
