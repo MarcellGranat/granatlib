@@ -6,7 +6,7 @@
 #' @export
 #'
 
-create_pb <- function(x) {
+create_pb <- function(x, .message = TRUE) {
 
   if (is.data.frame(x)) {
     n = nrow(x)
@@ -33,7 +33,7 @@ create_pb <- function(x) {
   assign("pb", pb, envir = rlang::global_env())
   if (!exists("pb")) assign("pb", pb, envir = rlang::env_parent())
 
-  if (exists("pb")) {
+  if (exists("pb") & .message) {
     message(crayon::green("pb created"))
   }
 

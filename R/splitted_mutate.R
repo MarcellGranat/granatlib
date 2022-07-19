@@ -48,7 +48,7 @@ splitted_mutate <- function(.data, ..., split_number = 100, .keep = NULL, .progr
   out <- tibble()
 
   if (.progress) {
-    granatlib::create_pb(split_number)
+    granatlib::create_pb(split_number, .message = FALSE)
   }
 
   for (i in 1:split_number) {
