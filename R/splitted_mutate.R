@@ -36,7 +36,7 @@
 #'
 
 
-splitted_mutate <- function(.data, ..., split_number = 100, .keep = NULL, cores = 1) {
+splitted_mutate <- function(.data, ..., split_number = 100, .keep = NULL, .progress = TRUE) {
   if (nrow(.data) < split_number) {
     split_number <- floor(nrow(.data) / 5)
   }
@@ -47,60 +47,27 @@ splitted_mutate <- function(.data, ..., split_number = 100, .keep = NULL, cores 
 
   out <- tibble()
 
-  granatlib::create_pb(n = split_number)
+  if (.progress) {
+    granatlib::create_pb(split_number)
+  }
 
-  if (cores == 1) {
-
-    for (i in 1:split_number) {
-      current_result <- .data %>%
-        filter(cut(row_number(), split_number, FALSE) == i) %>%
-        mutate(
-          ...
-        )
-
-      if (!is.null(.keep)) { # remove cols >> save memory
-        current_result <- current_result %>%
-          select(names(.data), .keep)
-      }
-      out <- bind_rows(
-        out, current_result
+  for (i in 1:split_number) {
+    current_result <- .data %>%
+      filter(cut(row_number(), split_number, FALSE) == i) %>%
+      mutate(
+        ...
       )
 
+    if (!is.null(.keep)) { # remove cols >> save memory
+      current_result <- current_result %>%
+        select(names(.data), .keep)
+    }
+
+    out <- bind_rows(out, current_result)
+
+    if (.progress) {
       pb$tick()
     }
-  } else {
-
-    dots <- list(...)
-
-    l <- .data %>%
-      mutate(g = cut(row_number(), split_number, FALSE)) %>%
-      group_by(g) %>%
-      group_split(.keep = FALSE)
-
-    cl <- makeCluster(cores)
-
-    clusterEvalQ(cl, expr = library(tidyverse))
-    clusterEvalQ(cl, expr = library(stringr))
-    clusterEvalQ(cl, expr = library(dplyr))
-    clusterEvalQ(cl, expr = library(tidyr))
-    clusterEvalQ(cl, expr = library(purrr))
-    clusterEvalQ(cl, expr = library(tibble))
-    clusterEvalQ(cl, expr = library(forcats))
-
-    clusterExport(cl=cl, varlist=c("l", "dots", ".keep", ".data", "pb"), envir=environment())
-
-    out <- parallel::parLapply(cl, X = l,  function(x) {
-
-      mutate(x, ...)
-
-      if (!is.null(.keep)) { # remove cols >> save memory
-        current_result <- current_result %>%
-          select(names(.data), .keep)
-      }
-      pb$tick()
-    })
-    stopCluster(cl)
-    out <- bind_rows(out)
   }
 
   out
