@@ -8,7 +8,7 @@
 #'
 
 md_insert <- function(md_name) {
-  read_delim(md_name, delim = "++++", col_names = FALSE)[[1]] %>%
+  read_delim(md_name, delim = "+_+_+_+%76324189", col_names = FALSE)[[1]] %>% # read all the lines
     {ifelse(str_starts(., "#"), str_c("\n", .), .)} %>%
     {str_c(., "\n\n", collapse = "")}
 
