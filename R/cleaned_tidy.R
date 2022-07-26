@@ -26,9 +26,9 @@ cleaned_tidy <- function(x, hun = FALSE) {
   if ("p.value" %in% names(x)) {
     p.stars <- case_when(
       x$p.value < .01 ~ "***",
-      x$p.value < .05 ~ "**",
-      x$p.value < .1 ~ "*",
-      TRUE ~ ""
+      x$p.value < .05 ~ "** ",
+      x$p.value < .1 ~ "*  ",
+      TRUE ~ "   "
     )
 
     x <- x %>%
