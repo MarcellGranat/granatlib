@@ -19,12 +19,13 @@ md_insert <- function(md_name, text_contained = NULL) {
 
   if (text_contained) {
 
-  read_delim(md_name, delim = "+_+_+_+%76324189", col_names = FALSE)[[1]] %>% # read all the lines
-    {ifelse(str_starts(., "#"), str_c("\n", .), .)} %>%
-    {str_c(., "\n\n", collapse = "")}
+    read_delim(md_name, delim = "+_+_+_+%76324189", col_names = FALSE)[[1]] %>% # read all the lines
+      keep(str_starts, "%%", negate = TRUE) %>%
+      {ifelse(str_starts(., "#"), str_c("\n", .), .)} %>%
+      {str_c(., "\n\n", collapse = "")}
   }
 
   # TODO citation replace
-    # citet!
-    # full change if latex
+  # citet!
+  # full change if latex
 }
