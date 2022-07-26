@@ -9,12 +9,14 @@
 
 md_insert <- function(md_name, text_contained = NULL) {
 
-  if (is.null(text_contained)) {
-    if (exists("params$text_contained")) {
-      text_contained = params$text_contained
-    } else {
+  if (is.null(text_contained)) { # if not given explicitly
+
+    text_contained = params$text_contained
+
+    if (is.null(text_contained)) { # if not specified in the YAML
       text_contained = TRUE
     }
+
   }
 
   if (text_contained) {
@@ -28,4 +30,5 @@ md_insert <- function(md_name, text_contained = NULL) {
   # TODO citation replace
   # citet!
   # full change if latex
+
 }
