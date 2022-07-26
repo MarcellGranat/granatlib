@@ -25,21 +25,12 @@ cleaned_tidy <- function(x, hun = FALSE) {
 
   if ("p.value" %in% names(x)) {
 
-    if (knitr::is_latex_output()) {
       p.stars <- case_when(
         x$p.value < .01 ~ "***",
-        x$p.value < .05 ~ "**\\space",
-        x$p.value < .1 ~ "*\\space\\space",
-        TRUE ~ "\\space\\space\\space"
+        x$p.value < .05 ~ "**",
+        x$p.value < .1 ~ "*",
+        TRUE ~  ""
       )
-    } else {
-      p.stars <- case_when(
-        x$p.value < .01 ~ "***",
-        x$p.value < .05 ~ "** ",
-        x$p.value < .1 ~ "*  ",
-        TRUE ~ "   "
-      )
-    }
 
     x <- x %>%
       mutate(
