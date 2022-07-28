@@ -9,7 +9,7 @@
 
 md_insert <- function(x, text_contained = NULL) {
 
-  if (stringr::str_ends(x, ".md")) {
+  if (str_ends(x, ".md")) {
 
   if (is.null(text_contained)) { # if not given explicitly
 
