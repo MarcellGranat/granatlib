@@ -160,4 +160,3 @@ tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, 
 
 }
 
-tidy_tex()
