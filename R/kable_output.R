@@ -8,8 +8,9 @@
 #' @export
 #'
 
+
 kable_output <- function (.data, align = NULL, round_digits = NULL, plus_sign = FALSE,
-                          hun = FALSE, same_digits = FALSE, verticals = FALSE, .keep_lines = c(1, 2, -1), force_large = FALSE, caption = NULL, ...)
+                          hun = FALSE, same_digits = FALSE, verticals = FALSE, .keep_lines = c(1, 2, -1), force_large = FALSE, caption = NULL, text_contained = NULL, ...)
 {
   x <- ungroup(.data)
   numeric_cols <- select_if(x, is.numeric) %>% names()
@@ -88,9 +89,92 @@ kable_output <- function (.data, align = NULL, round_digits = NULL, plus_sign = 
       knitr::kable(x, ..., align = align, caption = caption)
     }
   } else if (knitr::is_latex_output()) {
-    if (nrow(.data) < 30 | force_large) {
-      knitr::kable(x, ..., align = align, caption = caption)
+
+    if (is.null(text_contained)) { # if not given explicitly
+
+      text_contained = params$text_contained
+
+      if (is.null(text_contained)) { # if not specified in the YAML
+        text_contained = TRUE
+      }
+
     }
+
+    if (!is.null(knitr::opts_current$get()$label) & !is.null(params$tab_captions) & text_contained) {
+
+      label <- knitr::opts_current$get()$label
+
+      tab_captions_df <- read_lines(params$tab_captions) %>%
+        enframe() %>%
+        mutate(
+          name = case_when(
+            str_starts(value, "label") ~ "label",
+            str_starts(value, "caption") ~ "caption",
+            str_starts(value, "note") ~ "note",
+            TRUE ~ as.character(NA)
+          ),
+          value = ifelse(!is.na(name), str_remove(value, str_c(name, ": ")), value),
+          id = ifelse(name == "label", value, NA),
+        ) %>%
+        fill(name) %>%
+        fill(id) %>%
+        filter(value != "", id == label)
+
+      md_to_latex <- function(x) {
+
+        # simple star
+        out <- str_replace_all(x, "\\\\[*]", "TRULY_STAR723651") # impossibly matching chr
+
+        # bold
+        for (i in seq(str_count(out, "[*][*]") %/% 2)) {
+          out <- str_replace(out, "[*][*]", "\\\\\\\\textbf{")
+          out <- str_replace(out, "[*][*]", "}")
+        }
+
+        # italic
+        for (i in seq(str_count(out, "[*]") %/% 2)) {
+          out <- str_replace(out, "[*]", "\\\\\\\\textit{")
+          out <- str_replace(out, "[*]", "}")
+        }
+
+        out <- str_replace_all(out, "\n", "\n\n")
+
+        out
+      }
+
+      if (is.null(caption)) {
+        caption <- tab_captions_df %>%
+          filter(name == "caption") %>%
+          pull(value)
+      }
+
+      if (length(caption) == 0) {
+        caption <- "..."
+      }
+
+      out <- str_c("\\\\begin{table}\n
+  \\\\caption{", caption, "}\n
+  \\\\label{", label, "}\n")
+
+      note <- tab_captions_df %>%
+        filter(name == "note") %>%
+        pull(value)
+
+      if (length(note) != 0) {
+        note <- note %>%
+          md_to_latex() %>%
+          str_flatten("\n\n")
+
+        out <- out %>%
+          str_c("\\\\floatfoot{", note, "}")
+      }
+
+      out <- str_c(out, "\n\n\\\\centering\n\n\\\\begin{tabular}")
+      latex_out <- str_replace(latex_out, pattern = "\\\\begin[{]tabular[}]", out) %>%
+        str_c("\\end{table}")
+    }
+
+    knitr::asis_output(latex_out)
   } else {
     .data
   }
