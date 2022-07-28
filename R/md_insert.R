@@ -74,5 +74,3 @@ md_insert <- function(x, text_contained = NULL) {
   # full change if latex
 
 }
-
-print(md_insert(test))
