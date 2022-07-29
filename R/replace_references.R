@@ -31,7 +31,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
     closing_location <- detect(not_chr, ~ .x > pattern_location)
 
     out <- str_c(str_sub(out, end = closing_location - 1), "}", str_sub(out, start = closing_location))
-    out <- str_replace(out, p, str_replace(p, "@", "\ref{"))
+    out <- str_replace(out, p, str_c("\\\\ref{", str_sub(p, start = 2)))
 
   }
 
