@@ -7,7 +7,7 @@
 #' @export
 #'
 
-md_insert <- function(x, text_contained = NULL, asis = TRUE) {
+md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL, tab_captions = NULL) {
 
 
   if (is.null(text_contained)) { # if not given explicitly
@@ -30,6 +30,71 @@ md_insert <- function(x, text_contained = NULL, asis = TRUE) {
     }else {
       out <- x
     }
+
+    if (str_detect(out, "@")) { # reference
+
+      if (is.null(fig_captions)) {
+        fig_captions <- list.files(all.files = TRUE, full.names = TRUE, recursive = T) %>%
+          keep(str_detect, "fig_captions")
+      }
+
+      if (is.null(tab_captions)) {
+        tab_captions <- list.files(all.files = TRUE, full.names = TRUE, recursive = T) %>%
+          keep(str_detect, "tab_captions")
+      }
+
+      captions_df <- fig_captions %>%
+        read_lines() %>%
+        enframe() %>%
+        mutate(
+          id = cumsum(str_starts(value, "label:")),
+          name = case_when(
+            str_starts(value, "label") ~ "label",
+            str_starts(value, "caption") ~ "caption",
+            str_starts(value, "note") ~ "note",
+            TRUE ~ as.character(NA)
+          ),
+          value = ifelse(!is.na(name), str_remove(value, str_c(name, ": ")), value)
+        ) %>%
+        fill(name) %>%
+        filter(value != "")
+
+      # ref
+
+      latex_labels <- captions_df %>%
+        filter(name == "label") %>%
+        pull(value) %>%
+        unique()
+
+      tab_captions_df <- tab_captions %>%
+        read_lines() %>%
+        enframe() %>%
+        mutate(
+          id = cumsum(str_starts(value, "label:")),
+          name = case_when(
+            str_starts(value, "label") ~ "label",
+            str_starts(value, "caption") ~ "caption",
+            str_starts(value, "note") ~ "note",
+            TRUE ~ as.character(NA)
+          ),
+          value = ifelse(!is.na(name), str_remove(value, str_c(name, ": ")), value)
+        ) %>%
+        fill(name) %>%
+        filter(value != "")
+
+      # ref
+
+      tab_labels <- tab_captions_df %>%
+        filter(name == "label") %>%
+        pull(value) %>%
+        unique()
+
+      total_labels <- c(latex_labels, tab_labels, "eq:")
+
+      out <- granatlib::replace_references(out, total_labels = total_labels)
+    }
+
+
     if (asis) {
       knitr::asis_output(out)
     } else {
