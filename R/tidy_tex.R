@@ -79,9 +79,12 @@ tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, 
     mutate(value = md_to_latex(value))
 
 
-
+  latex_labels <<- latex_labels
   for (i in seq_along(latex_labels)) {
+
     include_raw <- which(str_detect(raw_text, "includegraphics") & str_detect(raw_text, latex_labels[i]))
+
+
     if (length(include_raw) == 1) {
 
       caption <- captions_df %>%
@@ -92,7 +95,19 @@ tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, 
         filter(id == i) %>%
         pull(value)
 
+      if (str_starts(raw_text[include_raw - 1], "\\\\begin[{]figure[}]", negate = TRUE)) {
+        raw_text <- append(raw_text, "\\end{figure}", include_raw)
+        raw_text <- append(raw_text, "\\begin{figure}", include_raw-1)
+        include_raw <- include_raw + 1
+      }
+
       if (length(caption) == 1) {
+        # raw_text[include_raw] <- gsub("\\caption[{].*", "", raw_text[include_raw])
+        raw_text[include_raw] <- gsub("\\\\caption[{].*", "", raw_text[include_raw])
+        # if(i == 1) print(raw_text)
+        # if(i == 1) print(gsub("\\\\caption[{].*", "", raw_text[include_raw]))
+
+
         while (raw_text[include_raw + 1] != "\\end{figure}") {
           raw_text <- raw_text[- (include_raw + 1)] # drop until end
         }
@@ -111,7 +126,6 @@ tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, 
       raw_text <- append(raw_text, str_c("\\caption{", caption, "}"), include_raw)
 
     }
-
   }
 
   # tab
@@ -159,4 +173,3 @@ tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, 
 
 
 }
-
