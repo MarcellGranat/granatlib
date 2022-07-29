@@ -7,7 +7,7 @@
 #' @export
 #'
 
-md_insert <- function(x, text_contained = NULL) {
+md_insert <- function(x, text_contained = NULL, asis = TRUE) {
 
 
   if (is.null(text_contained)) { # if not given explicitly
@@ -30,7 +30,11 @@ md_insert <- function(x, text_contained = NULL) {
     }else {
       out <- x
     }
-    out
+    if (asis) {
+      knitr::asis_output(out)
+    } else {
+      out
+    }
   }
 
 }
