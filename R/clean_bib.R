@@ -26,21 +26,22 @@ clean_bib <- function(file_name = NULL, clean_journal = TRUE) {
     map(function(x) discard(x, ~ . %in% c("ggg", "ffff", ""))) %>%
     discard(~ length(.) == 0)
 
-  author <- map(reference_items, keep, ~ str_starts(., "\tauthor")) # TODO remove
   author <- map(reference_items, keep, ~ str_starts(., "\tauthor|\teditor"))
 
   athor_found <- map_lgl(author, ~ length(.) != 0)
 
   get_author <- function(x) {
-    gsub(".*[{]", "", x[1]) %>%
+    out <- str_remove(x[1], "\tauthor =|\teditor =") %>%
+      str_remove_all("[{]") %>%
       gsub(pattern = "}.*", replacement = "") %>%
       gsub(pattern = ",.*", replacement = "") %>%
-      gsub(pattern = " .*", replacement = "")
+      gsub(pattern = "\\w .*", replacement = "") %>%
+      str_trim()
   }
 
   safely_get_author <- safely(get_author, NA, T)
 
-  author <- map(author, safely_get_author) %>%
+  author <- map(author, get_author) %>%
     map_chr(1)
 
   get_year <- function(x) {
@@ -53,8 +54,6 @@ clean_bib <- function(file_name = NULL, clean_journal = TRUE) {
   safely_get_year <- safely(get_year, NA, T)
 
 
-  print("h")
-  print(reference_items)
   year <- map(reference_items, safely_get_year) %>%
     map_chr(1)
 
@@ -88,7 +87,6 @@ clean_bib <- function(file_name = NULL, clean_journal = TRUE) {
 
 
   if (clean_journal) {
-
 
     journal <- map(reference_items, keep, ~ str_starts(., "\tjournal"))
 
