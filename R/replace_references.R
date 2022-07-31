@@ -38,7 +38,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
   # environment ref
 
   replace_env_values <- ls()
-  print(ls())
+  print(ls(envir = globalenv()))
   for (i in ls()) {
     if (str_detect(out, str_c("@", i))) {
       message("Replace: ", i)
