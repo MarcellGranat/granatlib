@@ -24,7 +24,7 @@ md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL
 
     if (str_ends(x, ".md")) {
       out <- read_delim(x, delim = "+_+_+_+%76324189", col_names = FALSE)[[1]] %>% # read all the lines
-        keep(str_starts, "%%", negate = TRUE) %>%
+        keep(str_starts, "%%|#\\w", negate = TRUE) %>%
         {ifelse(str_starts(., "#"), str_c("\n", .), .)} %>%
         {str_c(., "\n\n", collapse = "")}
     }else {
