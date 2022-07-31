@@ -37,24 +37,70 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
   # environment ref
 
-  replace_env_values <- ls(envir = globalenv())
-  print(replace_env_values)
-  for (i in ls()) {
-    if (str_detect(out, str_c("@", i))) {
+
+
+  for (i in ls(envir = globalenv())) {
+
+    if (str_detect(out, str_c("@", i, c(" ", "\\W"), collapse = "|"))) {
+
+      replacement <- get(i, envir = globalenv()) %>%
+        as.character()
+
+      if (!is.na(as.numeric(replacement))) {
+        replacement <- as.numeric(replacement)
+
+        if (replacement %% 1 == 0) {
+          n_digits = 0
+        } else {
+          n_digits = 4
+        }
+
+        if (replacement >= 10000) {
+          big.mark = ","
+        } else {
+          big.mark = ""
+        }
+
+        replacement <- format(round(replacement, digits = n_digits), big.mark = big.mark, decimal.mark = ".")
+
+      }
       message("Replace: ", i)
-      out <- str_replace_all(out, str_c("@", i), get(i, envir = globalenv()))
+      out <- str_replace_all(out, str_c("@", i), replacement = replacement)
     }
   }
 
 
 
 
-  if (exists("params")) {
-    print(params)
+  if (exists("params", envir = globalenv())) {
+
     for (i in names(params)) {
-      if (str_detect(out, str_c("@", i))) {
+      if (str_detect(out, str_c("@", i, c(" ", "\\W"), collapse = "|"))) {
         message("Replace: ", i)
-        out <- str_replace_all(out, str_c("@", i), get(str_c("params$", i), envir = globalenv()))
+
+        replacement <- params[[i]] %>%
+          as.character()
+
+        if (!is.na(as.numeric(replacement))) {
+          replacement <- as.numeric(replacement)
+
+          if (replacement %% 1 == 0) {
+            n_digits = 0
+          } else {
+            n_digits = 4
+          }
+
+          if (replacement >= 10000) {
+            big.mark = ","
+          } else {
+            big.mark = ""
+          }
+
+          replacement <- format(round(replacement, digits = n_digits), big.mark = big.mark, decimal.mark = ".")
+
+        }
+
+        out <- str_replace_all(out, str_c("@", i), replacement = replacement)
       }
     }
   }
