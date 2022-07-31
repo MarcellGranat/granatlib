@@ -51,8 +51,8 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
   if (exists("params")) {
     for (i in names(params)) {
-      message("Replace: ", i)
       if (str_detect(out, str_c("@", i))) {
+        message("Replace: ", i)
         out <- str_replace_all(out, str_c("@", i), get(str_c("params$", i)))
       }
     }
