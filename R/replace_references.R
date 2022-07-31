@@ -38,11 +38,10 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
   # environment ref
 
   replace_env_values <- ls()
-  print(ls(envir = globalenv()))
   for (i in ls()) {
     if (str_detect(out, str_c("@", i))) {
       message("Replace: ", i)
-      out <- str_replace_all(out, str_c("@", i), get(i))
+      out <- str_replace_all(out, str_c("@", i), get(i, envir = globalenv()))
     }
   }
 
@@ -50,11 +49,10 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
 
   if (exists("params")) {
-    print(names(params))
     for (i in names(params)) {
       if (str_detect(out, str_c("@", i))) {
         message("Replace: ", i)
-        out <- str_replace_all(out, str_c("@", i), get(str_c("params$", i)))
+        out <- str_replace_all(out, str_c("@", i), get(str_c("params$", i), envir = globalenv()))
       }
     }
   }
