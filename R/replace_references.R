@@ -40,7 +40,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
   replace_env_values <- ls()
 
   if (exists("params")) {
-    replace_env_values <- c(replace_env_values, names(params))
+    replace_env_values <- c(replace_env_values, str_c("params$", names(params)))
   }
 
   for (i in replace_env_values) {
