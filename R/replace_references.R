@@ -35,5 +35,19 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
   }
 
+  # environment ref
+
+  replace_env_values <- ls()
+
+  if (exists("params")) {
+    replace_env_values <- c(replace_env_values, names(params))
+  }
+
+  for (i in replace_env_values) {
+    if (str_detect(out, str_c("@", i))) {
+      out <- str_replace_all(out, str_c("@", i), get(i))
+    }
+  }
+
   out
 }
