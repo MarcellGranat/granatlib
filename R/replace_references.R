@@ -18,7 +18,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
 
   for (p in detected_patterns) {
-    message(crayon::silver("Replace: ", p))
+    message(crayon::green("Replace: ", p))
 
     pattern_location <- str_locate(out, p) %>%
       .[, 2] %>%
