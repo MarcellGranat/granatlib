@@ -107,7 +107,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
     }
   }
 
-  message(crayon::green("Replaced: ", replaced_references))
+  message(crayon::green("Replaced: ", str_flatten(replaced_references, ", ")))
 
   out
 }
