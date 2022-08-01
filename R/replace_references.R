@@ -16,9 +16,11 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
       as.numeric()
   }
 
+  replaced_references <- vector()
+
 
   for (p in detected_patterns) {
-    message(crayon::green("Replace: ", p))
+    replaced_references <- append(replaced_references, p)
 
     pattern_location <- str_locate(out, p) %>%
       .[, 2] %>%
@@ -64,7 +66,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
         replacement <- format(round(replacement, digits = n_digits), big.mark = big.mark, decimal.mark = ".")
 
       }
-      message(crayon::silver("Replace: ", i))
+      replaced_references <- append(replaced_references, i)
       out <- str_replace_all(out, str_c("@", i), replacement = replacement)
     }
   }
@@ -76,7 +78,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
     for (i in names(params)) {
       if (str_detect(out, str_c("@", i, c(" ", "\\W"), collapse = "|"))) {
-        message(crayon::silver("Replace: ", i))
+        replaced_references <- append(replaced_references, i)
 
         replacement <- params[[i]] %>%
           as.character()
@@ -104,6 +106,8 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
       }
     }
   }
+
+  message(crayon::green("Replaced: ", replaced_references))
 
   out
 }
