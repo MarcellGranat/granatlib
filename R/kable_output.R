@@ -177,6 +177,8 @@ kable_output <- function (.data, align = NULL, round_digits = NULL, plus_sign = 
     knitr::asis_output(latex_out)
   } else if (knitr::pandoc_to("docx")) {
     knitr::kable(x, ..., align = align, caption = caption)
+  } else if (knitr::pandoc_to("gfm-yaml_metadata_block")) {
+    knitr::kable(x, ..., align = align, caption = caption) # github output
   } else {
     .data
   }
