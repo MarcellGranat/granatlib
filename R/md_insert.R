@@ -35,7 +35,7 @@ md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL
         which()
       eq_end <- str_detect(out, "end[{]equation") %>%
         which()
-      message(eq_begin)
+
       eq_lines <- map2(eq_begin, eq_end, ~ seq(from = .x, to = .y - 1)) %>%
         reduce(c) %>%
         unique()

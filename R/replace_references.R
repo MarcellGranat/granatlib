@@ -64,7 +64,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
         replacement <- format(round(replacement, digits = n_digits), big.mark = big.mark, decimal.mark = ".")
 
       }
-      message("Replace: ", i)
+      message(crayon::silver("Replace: ", i))
       out <- str_replace_all(out, str_c("@", i), replacement = replacement)
     }
   }
