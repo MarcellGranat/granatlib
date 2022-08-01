@@ -18,7 +18,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
 
   for (p in detected_patterns) {
-    message("Replace: ", p)
+    message(crayon::silver("Replace: ", p))
 
     pattern_location <- str_locate(out, p) %>%
       .[, 2] %>%
@@ -76,7 +76,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
     for (i in names(params)) {
       if (str_detect(out, str_c("@", i, c(" ", "\\W"), collapse = "|"))) {
-        message("Replace: ", i)
+        message(crayon::silver("Replace: ", i))
 
         replacement <- params[[i]] %>%
           as.character()
