@@ -1,4 +1,4 @@
-replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
+replace_references2 <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
   out <- t
 
@@ -46,7 +46,7 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
       replacement <- get(i, envir = globalenv()) %>%
         as.character()
 
-      if (!is.na(as.numeric(replacement))) {
+      if (as.character(as.numeric(replacement)) == replacement) {
         replacement <- as.numeric(replacement)
 
         if (replacement %% 1 == 0) {
@@ -107,3 +107,4 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
   out
 }
+
