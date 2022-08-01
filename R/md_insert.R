@@ -7,6 +7,7 @@
 #' @export
 #'
 
+
 md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL, tab_captions = NULL) {
 
 
@@ -25,9 +26,31 @@ md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL
     if (str_ends(x, ".md")) {
       out <- read_delim(x, delim = "+_+_+_+%76324189", col_names = FALSE)[[1]] %>% # read all the lines
         keep(str_starts, "%%|#\\w", negate = TRUE) %>%
-        {ifelse(str_starts(., "#"), str_c("\n", .), .)} %>%
-        {str_c(., "\n\n", collapse = "")}
+        {ifelse(str_starts(., "#"), str_c("\n", .), .)}
+
+      # eq lines
+      eq_begin <- str_detect(out, "begin[{]equation") %>%
+        which()
+      eq_end <- str_detect(out, "end[{]equation") %>%
+        which()
+      message(eq_begin)
+      eq_lines <- map2(eq_begin, eq_end, ~ seq(from = .x, to = .y - 1)) %>%
+        reduce(c) %>%
+        unique()
+
+      not_eq_lines <- seq_along(out) %>%
+        setdiff(eq_lines)
+      message("not eq")
+      message(not_eq_lines)
+      out <- str_c(out, "\n")
+      for (i in not_eq_lines) {
+        out[i] <- str_c(out[i], "\n")
+      }
+
+      out <- str_flatten(out)
+
     }else {
+
       out <- x
     }
 
