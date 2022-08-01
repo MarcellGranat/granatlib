@@ -1,4 +1,4 @@
-replace_references2 <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
+replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
   out <- t # raw test
 
