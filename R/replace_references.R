@@ -1,6 +1,6 @@
 replace_references2 <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
-  out <- t
+  out <- t # raw test
 
   total_labels <- c("winner-loser", "ar-lollipop", "rolling-coefs", "est-t0", "market-vs-four", "best-nls", "eq:")
 
