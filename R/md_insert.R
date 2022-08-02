@@ -35,6 +35,7 @@ md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL
         which()
       eq_end <- str_detect(out, "end[{]equation") %>%
         which()
+      if (length(eq_begin) != 0) {
 
       eq_lines <- map2(eq_begin, eq_end, ~ seq(from = .x, to = .y - 1)) %>%
         reduce(c) %>%
@@ -43,12 +44,12 @@ md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL
       not_eq_lines <- seq_along(out) %>%
         setdiff(eq_lines)
 
-      out <- str_c(out, "\n")
       for (i in not_eq_lines) {
         out[i] <- str_c(out[i], "\n")
       }
+      }
 
-      out <- str_flatten(out)
+      out <- str_flatten(out, collapse = "\n")
 
     } else {
 
