@@ -17,13 +17,14 @@ clean_bib <- function(file_name = NULL, clean_journal = TRUE) {
 
   reference_items <- read_lines(file_name) %>%
     {str_c(., "ffff")} %>%
-    {ifelse(. == "}ffff", "ggg", .)} %>%
-    {ifelse(. == "ffff", "nnnn", .)} %>%
+    {ifelse(. == "}ffff", "ggg", .)} %>% # last line
+    {ifelse(. == "ffff", "nnnn", .)} %>% # empty line
     str_flatten() %>%
     str_split("gggnnnn") %>%
     .[[1]] %>%
     str_split("ffff") %>%
     map(function(x) discard(x, ~ . %in% c("ggg", "ffff", ""))) %>%
+    map(~ str_remove_all(., "nnnn")) %>%
     discard(~ length(.) == 0)
 
   author <- map(reference_items, keep, ~ str_starts(., "\tauthor|\teditor"))
@@ -45,18 +46,36 @@ clean_bib <- function(file_name = NULL, clean_journal = TRUE) {
     map_chr(1)
 
   get_year <- function(x) {
-    c(
+    y <- c(
       keep(x, str_starts, "\tyear"),
       keep(x, str_starts, "\tdate"),
       ""
     ) %>%
-      str_extract(str_flatten(1900:2022)) %>%
+      str_extract(str_flatten(1900:2022, "|")) %>%
       na.omit() %>%
-      first() %>%
-      str_sub(start = 3)
+      first()
+
+
+    if (y == "") {
+      message(crayon::bgRed("No year specified!"))
+    }
+
+    y
   }
 
   year <- map_chr(reference_items, get_year)
+
+  append_year <- function(.ref, .year) {
+    clean_ref <- .ref
+    if (length(keep(.ref, str_starts, "\tyear")) == 0) {
+      clean_ref <- append(clean_ref, str_c("\tyear = {", .year, "}, % modified"), after = 1)
+    }
+    clean_ref
+  }
+
+  reference_items <- map2(reference_items, year, append_year)
+
+  year <- str_sub(year, start = 3)
 
   n_author <- enframe(author, name = NULL, value = "author") %>%
     count(author)
@@ -161,6 +180,4 @@ clean_bib <- function(file_name = NULL, clean_journal = TRUE) {
   } else {
     message(crayon::bgRed(".bib untouched!"))
   }
-
-
 }
