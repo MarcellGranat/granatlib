@@ -12,7 +12,7 @@ myplotly <- function(p, tooltip = c("text"), bgcolor = "#2DA2BF") {
     font = font
   )
 
-  if (knitr::is_latex_output() | knitr::pandoc_to("gfm-yaml_metadata_block", "docx")) {
+  if (knitr::is_latex_output() | knitr::pandoc_to("gfm-yaml_metadata_block") | knitr::pandoc_to("docx")) {
     p
   } else {
     plotly::ggplotly(p, tooltip = tooltip) %>%
