@@ -45,18 +45,18 @@ clean_bib <- function(file_name = NULL, clean_journal = TRUE) {
     map_chr(1)
 
   get_year <- function(x) {
-    keep(x, str_starts, "\tyear") %>%
-      gsub(pattern = ".*[{]", replacement = "") %>%
-      gsub(pattern = "}.*", replacement = "") %>%
+    c(
+      keep(x, str_starts, "\tyear"),
+      keep(x, str_starts, "\tdate"),
+      ""
+    ) %>%
+      str_extract(str_flatten(1900:2022)) %>%
+      na.omit() %>%
+      first() %>%
       str_sub(start = 3)
   }
 
-  safely_get_year <- safely(get_year, NA, T)
-
-
-  year <- map(reference_items, safely_get_year) %>%
-    map_chr(1)
-
+  year <- map_chr(reference_items, get_year)
 
   n_author <- enframe(author, name = NULL, value = "author") %>%
     count(author)
