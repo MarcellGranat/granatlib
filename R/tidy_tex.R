@@ -1,4 +1,4 @@
-tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, note_type = "simple") {
+tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, note_type = "simple", begin_figure = NULL) {
   if (is.null(tex_file)) {
     tex_file <- list.files() %>%
       keep(str_ends, ".tex")
@@ -25,6 +25,14 @@ tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, 
   if (is.null(tab_captions)) {
     tab_captions <- list.files(all.files = TRUE, full.names = TRUE, recursive = T) %>%
       keep(str_detect, "tab_captions")
+  }
+
+  if (is.null(begin_figure)) {
+    begin_figure <- raw_text %>%
+      # contain if not elsarticle
+      str_detect("elsarticle") %>%
+      any() %>%
+      !.
   }
 
   captions_df <- fig_captions %>%
@@ -95,7 +103,7 @@ tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, 
         filter(id == i) %>%
         pull(value)
 
-      if (str_starts(raw_text[include_raw - 1], "\\\\begin[{]figure[}]", negate = TRUE)) {
+      if (begin_figure & str_starts(raw_text[include_raw - 1], "\\\\begin[{]figure[}]", negate = TRUE)) {
         raw_text <- append(raw_text, "\\end{figure}", include_raw)
         raw_text <- append(raw_text, "\\begin{figure}", include_raw-1)
         include_raw <- include_raw + 1
@@ -108,8 +116,12 @@ tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, 
         # if(i == 1) print(gsub("\\\\caption[{].*", "", raw_text[include_raw]))
 
 
-        while (raw_text[include_raw + 1] != "\\end{figure}") {
-          raw_text <- raw_text[- (include_raw + 1)] # drop until end
+        if (begin_figure) {
+
+          while (raw_text[include_raw + 1] != "\\end{figure}") {
+
+            raw_text <- raw_text[- (include_raw + 1)] # drop until end
+          }
         }
       }
 
@@ -122,6 +134,7 @@ tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, 
           raw_text <- append(raw_text, n, include_raw)
         }
       }
+
       raw_text <- append(raw_text, str_c("\\label{", latex_labels[i], "}"), include_raw)
       raw_text <- append(raw_text, str_c("\\caption{", caption, "}"), include_raw)
 
@@ -165,7 +178,7 @@ tidy_tex <- function(tex_file = NULL, fig_captions = NULL, tab_captions = NULL, 
   message("\nAll good? y/n")
   ans = readline()
   if (ans == "y") {
-    cat(str_flatten(raw_text, "\n"), file = str_c("", tex_file))
+    cat(str_flatten(raw_text, "\n"), file = tex_file)
     message(crayon::bgGreen(".tex modified!"))
   } else {
     message(crayon::bgRed(".tex untouched!"))
