@@ -18,7 +18,6 @@ replace_references <- function(t, total_labels = c("fig:", "tab:", "eq:")) {
 
   replaced_references <- vector()
 
-
   for (p in detected_patterns) {
     replaced_references <- append(replaced_references, p)
 
