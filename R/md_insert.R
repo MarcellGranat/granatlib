@@ -23,7 +23,7 @@ md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL
 
     if (is.null(todo_contained)) { # if not given explicitly
 
-    text_contained = params$todo_contained
+      todo_contained = params$todo_contained
 
     if (is.null(todo_contained)) { # if not specified in the YAML
       todo_contained = TRUE
