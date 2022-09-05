@@ -8,7 +8,7 @@
 #'
 
 
-md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL, tab_captions = NULL) {
+md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL, tab_captions = NULL, todo_contained = NULL) {
 
 
   if (is.null(text_contained)) { # if not given explicitly
@@ -21,12 +21,28 @@ md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL
 
   }
 
+    if (is.null(todo_contained)) { # if not given explicitly
+
+    text_contained = params$todo_contained
+
+    if (is.null(todo_contained)) { # if not specified in the YAML
+      todo_contained = TRUE
+    }
+    }
+
+  remove_lines <- "%%|#\\w"
+
+  if (!todo_contained) {
+    remove_lines <- remove_lines %>%
+      str_c("|- [ ]|- [x]")
+  }
+
   if (text_contained) {
 
     if (str_ends(x, ".md")) {
       suppressMessages({
         out <- read_delim(x, delim = "+_+_+_+%76324189", col_names = FALSE)[[1]] %>% # read all the lines
-          keep(str_starts, "%%|#\\w", negate = TRUE) %>%
+          keep(str_starts, remove_lines, negate = TRUE) %>%
           {ifelse(str_starts(., "#"), str_c("\n", .), .)}
       })
 
