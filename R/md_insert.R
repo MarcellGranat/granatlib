@@ -9,7 +9,7 @@
 
 
 md_insert <- function(x, text_contained = NULL, asis = TRUE, fig_captions = NULL, tab_captions = NULL, todo_contained = NULL) {
-
+  library(tidyverse)
 
   if (is.null(text_contained)) { # if not given explicitly
 
