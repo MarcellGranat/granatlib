@@ -1,4 +1,8 @@
-optimized_arrange <- function(x, n) {
+optimized_arrange <- function(x, n = NULL) {
+
+  if (!is.numeric(n)) {
+    stop("Provide n!")
+  }
 
   if (is.data.frame(x)) {
     remain <- seq(nrow(x))
@@ -12,6 +16,8 @@ optimized_arrange <- function(x, n) {
     new_order <- c(new_order, head(remain, n), rev(tail(remain, n)))
     remain <- base::setdiff(remain, new_order)
   }
+
+  new_order <- unique(new_order)
 
   if (is.data.frame(x)) {
     x[new_order, ]
