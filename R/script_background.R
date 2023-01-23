@@ -1,10 +1,10 @@
 script_background <- function(script_name = NULL, name = NULL, ..., remove_temp_code = TRUE, sleep_time = 7) {
-  
+
 if (is.null(name)) {
-  name <- script_name %>% 
-    str_remove("[.]R") %>% 
-    str_replace_all("-", " ") %>% 
-    str_remove("\\d* ") %>% 
+  name <- script_name %>%
+    str_remove("[.]R") %>%
+    str_replace_all("-", " ") %>%
+    str_remove("\\d* ") %>%
     str_to_title()
 }
 
@@ -12,10 +12,17 @@ if (is.null(script_name)) {
   stop("Provide an R script name.")
 }
 
-temp_file_name <- str_remove_all(Sys.time(), "\\D") %>% 
+temp_file_name <- str_remove_all(Sys.time(), "\\D") %>%
   str_c("_temp_code.R")
 
 temp_code <- str_c('
+if ("utils.R" %in% list.files()) {
+  source("utils.R")
+} else {
+  suppressPackageStartupMessages({
+    library(tidyverse)
+  })
+}
 message(crayon::bgMagenta("Running ", "',script_name,'" ))
 tictoc::tic(msg = str_remove("',script_name,'", "[.]R"))
 tryCatch({
