@@ -1,10 +1,5 @@
 cb_background <- function(name = NULL, remove_temp_code = FALSE, sleep_time = 7) {
-  library(tidyverse)
-  if ("utils.R" %in% list.files()) {
-    source("utils.R")
-    message("Run utils.R")
-  }
-  list.files()
+
   if (is.null(name)) {
     name <- clipr::read_clip() %>%
       keep(str_detect, "\\w") %>%
@@ -16,12 +11,17 @@ cb_background <- function(name = NULL, remove_temp_code = FALSE, sleep_time = 7)
     str_c("_temp_code.R")
 
   temp_code <- str_c('
+library(tidyverse)
+if ("utils.R" %in% list.files()) {
+  source("utils.R")
+  message("Run utils.R")
+}
 message(crayon::bgMagenta("Running code from clipboard"))
 message(crayon::cyan(str_flatten(clipr::read_clip(allow_non_interactive = TRUE), "\n")))
 tictoc::tic()
 tryCatch({
 ',
-  str_flatten(clipr::read_clip(allow_non_interactive = TRUE), "\n"),
+  stringr::str_flatten(clipr::read_clip(allow_non_interactive = TRUE), "\n"),
 '
 }, error = function(e) {
  e <<- e
