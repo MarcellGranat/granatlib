@@ -1,33 +1,13 @@
-n_times_try <- function(.exp, sleep_times = c(3, 3, 3), otherwise = NULL, print_warning = FALSE) {
-  n_try <- 0
-  done <- FALSE
-  while (!done) {
-    out <- tryCatch({
-      done <- TRUE
-      .exp
-    }, error = function(e) {
-      if (print_warning) {
-        warning(e)
-      }
-      assign("done", FALSE, envir = parent.frame())
-    })
-
-    if (!done) {
-      n_try <- n_try + 1
-      if (n_try <= length(sleep_times)) {
-        if (print_warning) {
-          message("Run into error, wait ", crayon::blue(sleep_times[n_try]), " sec")
-          Sys.sleep(sleep_times[n_try])
-        }
-      } else {
-        warning("Fatal")
-        done <- TRUE
-        return(otherwise)
-      }
+n_times_try <- function(.exp, sleep_times = c(3, 3, 3), otherwise = NULL) {
+  for (st in sleep_times) {
+    tryCatch({out <- {.exp}}, error = \(e) message(crayon::magenta(e), "\n"))
+    if (exists("out")) {
+      return(out)
+      break
     }
+    message("Run into error, wait ", crayon::blue(st), " sec")
+    Sys.sleep(st)
   }
-
-  if (n_try < length(sleep_times)) {
-    return(out)
-  }
+  message(crayon::red("FATAL"))
+  return(otherwise)
 }
