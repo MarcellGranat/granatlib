@@ -11,6 +11,8 @@
 #'
 #' m <- lm(Sepal.Length ~ Petal.Width, iris)
 #' cleaned_tidy(m, hun = TRUE)
+#'
+#' @export
 
 cleaned_tidy <- function(x, hun = FALSE) {
 
