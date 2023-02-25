@@ -19,6 +19,3 @@ Imputed data.frame \code{overview_print}
 \description{
 using functions from package mice to impute missing data and return the data.frame
 }
-\examples{
-create_pb()
-}

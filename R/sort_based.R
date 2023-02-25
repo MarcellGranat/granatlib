@@ -10,11 +10,11 @@
 #'
 
 sort_based <- function(x, .f) {
-  order <- map_dbl(x, .f) |>
+  order <- purrr::map_dbl(x, .f) |>
     rank() |>
-    enframe(value = "rank") |>
-    arrange(rank) |>
-    pull(name)
+    tibble::enframe(value = "rank") |>
+    dplyr::arrange(rank) |>
+    dplyr::pull(name)
 
   x[order]
 }

@@ -6,8 +6,7 @@
 #' @param ... Additional arguments for mice
 #'
 #' @return Imputed data.frame \code{overview_print}
-#' @examples
-#' create_pb()
+
 #' @export
 #'
 
