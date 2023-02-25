@@ -18,5 +18,7 @@ Colorise  or draw column for all numeric or selected columns (chr vector) of a d
 }
 \examples{
 colorised_datatable(iris, "Sepal.Length", type = "bar")
+
+
 colorised_datatable(iris)
 }

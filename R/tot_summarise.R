@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' iris |>
-#'  group_by(Species) |>
+#'  dplyr::group_by(Species) |>
 #'  tot_summarise(mean(Sepal.Length))
 #'
 #' @export

@@ -21,7 +21,7 @@ Add a total as a new level to the second grouping column. (e.g.: total rate in e
 }
 \examples{
 iris |>
- group_by(Species) |>
+ dplyr::group_by(Species) |>
  tot_summarise(mean(Sepal.Length))
 
 }

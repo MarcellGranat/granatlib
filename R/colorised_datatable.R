@@ -7,6 +7,8 @@
 #' @param type "bar" or "bg-color" (default).
 #' @examples
 #' colorised_datatable(iris, "Sepal.Length", type = "bar")
+#'
+#'
 #' colorised_datatable(iris)
 #' @export
 #'

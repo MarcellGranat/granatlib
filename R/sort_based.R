@@ -8,6 +8,7 @@
 #' @examples
 #' sort_based(c("a22", "b33", "c15"), parse_number)
 #'
+#' @export
 
 sort_based <- function(x, .f) {
   order <- purrr::map_dbl(x, .f) |>

@@ -4,6 +4,7 @@
 #'
 #' @examples
 #' dummify(ggplot2::diamonds, "cut")
+#'
 #' dummify(ggplot2::diamonds)
 #' @export
 #'
@@ -17,7 +18,7 @@ dummify <- function(.data, .col = NULL, sep = "_") {
       } else {
         pos <- unique(as.character(.x))
         purrr::map_dfc(pos, function(p){
-          tibble::tibble(ifelse(.x == p, 1, 0)) %>%
+          tibble::tibble(ifelse(.x == p, 1, 0)) |>
             purrr::set_names(stringr::str_c(.y, sep, p))
         })
       }
@@ -26,12 +27,12 @@ dummify <- function(.data, .col = NULL, sep = "_") {
   } else {
     orig_df <- dplyr::select(.data, - dplyr::all_of(.col))
 
-    dummified_df <- .data %>%
-      dplyr::select(dplyr::all_of(.col)) %>%
+    dummified_df <- .data |>
+      dplyr::select(dplyr::all_of(.col)) |>
       purrr::imap_dfc(~ {
         pos <- unique(as.character(.x))
         purrr::map_dfc(pos, function(p){
-          tibble::tibble(ifelse(.x == p, 1, 0)) %>%
+          tibble::tibble(ifelse(.x == p, 1, 0)) |>
             purrr::set_names(stringr::str_c(.y, sep, p))
         })
       }

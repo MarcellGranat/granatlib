@@ -16,4 +16,5 @@ A theme that is conditionally dark or minimal (by default). Dark if you use it i
 ggplot(iris, aes(Sepal.Length, Petal.Width)) +
   geom_point() +
   theme_gR()
+
 }

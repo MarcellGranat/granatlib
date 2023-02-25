@@ -8,6 +8,8 @@
 #' ggplot(iris, aes(Sepal.Length, Petal.Width)) +
 #'   geom_point() +
 #'   theme_gR()
+#'
+#' @export
 
 theme_gR <- function(base_theme = NULL) {
 

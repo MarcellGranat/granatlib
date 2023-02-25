@@ -11,5 +11,6 @@ Dummify all non-numeric or dplyr::selected columns (chr vector) of a data.frame
 }
 \examples{
 dummify(ggplot2::diamonds, "cut")
+
 dummify(ggplot2::diamonds)
 }
