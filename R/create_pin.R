@@ -1,12 +1,19 @@
+#' @title Create a secret pin
+#'
+#' @description Create a secret pin
+#' @param onedrive_folder Name of the folder to use
+#' @export
+#'
+
+
 create_pin <- function(onedrive_folder = NULL) {
+  library(pins) # need for usage in your wd
   # create a secret pin names .board
-  library(tidyverse)
-  library(pins)
 
   if (is.null(onedrive_folder)) {
     # name of the project as default
     onedrive_folder <- rstudioapi::getActiveProject() |>
-      str_remove_all(".{0,}/")
+      stringr::str_remove_all(".{0,}/")
   }
 
   if (exists("od")) {
@@ -23,7 +30,7 @@ create_pin <- function(onedrive_folder = NULL) {
   }
 
   in_your <- .od$list_files() |>
-    filter(isdir & name == onedrive_folder) |>
+    dplyr::filter(isdir & name == onedrive_folder) |>
     nrow() |>
     (\(x) x == 1) ()
 
@@ -46,7 +53,7 @@ create_pin <- function(onedrive_folder = NULL) {
     shared_items <- .od$list_shared_files()
 
     in_shared <- shared_items |>
-      filter(isdir & name == onedrive_folder) |>
+      dplyr::filter(isdir & name == onedrive_folder) |>
       nrow() |>
       (\(x) x == 1) ()
 
@@ -74,4 +81,3 @@ create_pin <- function(onedrive_folder = NULL) {
   }
 
 }
-

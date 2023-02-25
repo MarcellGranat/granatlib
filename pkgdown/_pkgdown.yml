@@ -1,0 +1,14 @@
+template:
+  bootstrap: 5
+  bslib:
+    bg: "white"
+    fg: "#46babb"
+    primary: "#0c4853"
+navbar:
+  structure:
+    right: [MarcellGranat, github]
+  components:
+    MarcellGranat:
+      icon: fa-user
+      href: https://www.marcellgranat.com/
+      aria-label: Marcell Granat

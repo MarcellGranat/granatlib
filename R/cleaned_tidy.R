@@ -1,3 +1,17 @@
+#' @title Additional formatting options for a broom::tidy() data.frame
+#'
+#' @description Additional formatting options for a broom::tidy() data.frame
+#'
+#' @param x model or tidied data.frame
+#' @param hun Hungarian output? (default FALSE)
+#'
+#' @examples
+#' m <- broom::tidy(lm(Sepal.Length ~ Petal.Width, iris))
+#' cleaned_tidy(m)
+#'
+#' m <- lm(Sepal.Length ~ Petal.Width, iris)
+#' cleaned_tidy(m, hun = TRUE)
+
 cleaned_tidy <- function(x, hun = FALSE) {
 
   if (is.data.frame(x)) {
@@ -53,6 +67,19 @@ cleaned_tidy <- function(x, hun = FALSE) {
   x <- mutate_if(x, is.numeric, round, 4)
   x <- mutate_if(x, is.numeric, format, digits = 4, decimal.mark = f_decimal_mark, big.mark = f_big_mark)
   x <- mutate_if(x, is.numeric, as.character)
+
+  if (hun) {
+    x <- rename_all(x, ~ {
+      case_when(
+        . == "Estimate" ~ "Koefficiens",
+        . == "Term" ~ "Változó",
+        . == "Std.err" ~ "St. hiba",
+        . == "Statistic" ~ "T-statisztika",
+        . == "P-value" ~ "P-érték",
+        TRUE ~ .
+      )
+    })
+  }
 
   return(x)
 }

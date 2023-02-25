@@ -1,8 +1,12 @@
-#' @title create_pb
+#' @title Create progress bar.
 #'
 #' @description Create progress bar.
 #' @examples
-#' create_pb(100)
+#' granatlib::create_pb(100)
+#' for (i in 1:100) {
+#'   Sys.sleep(.1)
+#'   pb$tick()
+#' }
 #' @export
 #'
 
@@ -19,9 +23,7 @@ create_pb <- function(x, .message = TRUE) {
     retrive <- TRUE
   }
 
-  library(progress)
-
-  pb <- progress_bar[["new"]](format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
+  pb <- progress::progress_bar[["new"]](format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
                               total = n,
                               complete = "=",
                               incomplete = "-",
