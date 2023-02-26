@@ -42,13 +42,13 @@ tot_summarise <- function(x, ..., total_name = "Total") {
     dplyr::select(any_of(g_keys), dplyr::everything()) |>
     dplyr::ungroup()
 
-  bind_rows(
+  dplyr::bind_rows(
     x |>
       dplyr::summarise(...) |>
       dplyr::ungroup() |>
-      dplyr::arrange_at(length(g_keys), desc),
+      dplyr::arrange_at(length(g_keys), dplyr::desc),
     x_ungrouped
   ) |>
-    dplyr::mutate_at(length(g_keys), fct_inorder) |>
+    dplyr::mutate_at(length(g_keys), forcats::fct_inorder) |>
     dplyr::group_by_at(g_keys)
 }
