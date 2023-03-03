@@ -13,6 +13,8 @@
 #' i = i + 1
 #' v[[i]] + 3
 #' })
+#'
+#' @export
 
 n_times_try <- function(.exp, sleep_times = c(3, 3, 3), otherwise = NULL, print_message = FALSE) {
   for (st in sleep_times) {
