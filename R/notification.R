@@ -1,3 +1,11 @@
+#' @title Send a notification on Mac.
+#'
+#' @description Sends a notification on Mac. Retrives a sound only on Windows.
+#' @param ... Message.
+#' @param sound Should play a sound (default FALSE).
+#'
+#' @export
+
 notification <- function(..., sound = FALSE) {
 
     if (sound) { # any OS
