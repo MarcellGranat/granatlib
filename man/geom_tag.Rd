@@ -17,5 +17,5 @@ geom_tag(
 )
 }
 \description{
-tag a point
+highlight a datapoint on the figure with label.
 }

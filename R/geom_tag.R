@@ -1,7 +1,10 @@
 #' @title geom_tag
 #'
-#' @description tag a point
+#' @description highlight a datapoint on the figure with label.
 #'
+#' @export
+#'
+
 geom_tag <- function(x, y, label = "label", color = "cyan4", shape = 16, nudge_x = -.5, nudge_y = -.5, point_size = 3, label_size = 3) {
   .data <- tibble::tibble(x = x, y = y)
 
