@@ -8,6 +8,7 @@
 #' @examples
 #' x = 3
 #' info("The value of x is {x}.", "info", add_time = TRUE)
+#'
 #' @export
 #'
 
@@ -17,12 +18,12 @@ info <- function(msg = "", type = "info", add_time = TRUE) {
     bold_text <- stringr::str_extract(msg, "[{].*?[}]") |>
       stringr::str_glue() |>
       crayon::bold() |>
-      (\(x) {
+      (\(b_text) {
         dplyr::case_when(
-          type == "info" ~ crayon::blue(x),
-          type == "ok" ~ crayon::green(x),
-          type == "warning" ~ crayon::red(x),
-          TRUE ~ x
+          type == "info" ~ crayon::blue(b_text),
+          type == "ok" ~ crayon::green(b_text),
+          type == "warning" ~ crayon::red(b_text),
+          TRUE ~ b_text
         )
       }) ()
 

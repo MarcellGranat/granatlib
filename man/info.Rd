@@ -19,4 +19,5 @@ Print a nicely formatted message, optionally with system time.
 \examples{
 x = 3
 info("The value of x is {x}.", "info", add_time = TRUE)
+
 }
