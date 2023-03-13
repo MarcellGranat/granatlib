@@ -23,7 +23,7 @@ repo_str <- function(board = TRUE) {
     dplyr::first()
 
   if (is.na(utils_filename)) {
-    cat(c('if (!require(pacman)) install.packages("pacman"); library(pacman)',
+    cat(c('if (!require(pacman, quietly = TRUE)) install.packages("pacman"); library(pacman)',
           'p_load("tidyverse", "pins", "currr")',
           'p_load_gh("marcellgranat/granatlib")',
           'p_load_gh("marcellgranat/ggProfessional")',
