@@ -8,6 +8,11 @@
 
 notification <- function(..., sound = FALSE) {
 
+  if ("logo.png" %in% list.files()) {
+    img <- "logo.png"
+  } else {
+    img <- NULL
+  }
     if (sound) { # any OS
       beepr::beep(1)
     }
@@ -16,13 +21,13 @@ notification <- function(..., sound = FALSE) {
     if (missing(...)) { # if no message specified
       notifier::notify(
         title = gsub(".*/", "", getwd()), # project name as title
-        image = ifelse("logo.png" %in% list.files(), "logo.png", NULL),
+        image = img,
         msg = "Work done!" # if no message specified
       )
     } else {
       notifier::notify(
         title = gsub(".*/", "", getwd()),
-        image = ifelse("logo.png" %in% list.files(), "logo.png", NULL),
+        image = img,
         msg = ... # if messages specified
       )
     }
