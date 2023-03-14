@@ -7,11 +7,11 @@
 info(msg = "", type = "info", add_time = TRUE)
 }
 \arguments{
-\item{msg}{The message to display. Use {} for glue type interpolating.}
+\item{msg}{The message to display. Use {} for glue type interpolating. It can also detect the x in map using the get() function, but putting it into a function would cause an error, and simple bold text will be retrived.}
 
 \item{type}{Character. One of "info" (default)/"ok"/"warning". This will determine the color and the symbol.}
 
-\item{add_time}{Logical. Shoudl the time printed? (default TRUE)}
+\item{add_time}{Logical. Should the time printed? (default TRUE)}
 }
 \description{
 Print a nicely formatted message, optionally with system time.
@@ -20,4 +20,7 @@ Print a nicely formatted message, optionally with system time.
 x = 3
 info("The value of x is {x}.", "info", add_time = TRUE)
 
+purrr::walk(1:10, \(x) info("{x} is bold!", "ok"))
+
+purrr::walk(1:10, \(x) info("{x + 1} is bold!", "warning"))
 }
