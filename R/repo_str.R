@@ -85,7 +85,7 @@ repo_str <- function(board = TRUE) {
   }
 
 if (!".Rprofile" %in% list.files(all.files = TRUE)) {
-  cat(c("library(stats)", paste0('source("', utils_filename,'")'), ifelse(board, 'source("00-board.R")', '')), file = ".Rprofile", sep = "\n")
+  cat(c("library(stats)", paste0('source("', utils_filename,'")'), ifelse(board, 'source("00-board.R")', ''), "paint::mask_print()", "options(paint_palette = paint::brewer_dark2_7())"), file = ".Rprofile", sep = "\n")
   granatlib::info("{'.Rprofile'} created", "ok", add_time = FALSE)
 }
 
