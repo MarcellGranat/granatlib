@@ -13,9 +13,9 @@ notification <- function(..., sound = FALSE) {
   } else {
     img <- NULL
   }
-    if (sound) { # any OS
-      beepr::beep(1)
-    }
+  if (sound) { # any OS
+    beepr::beep(1)
+  }
 
   if (stringr::str_detect(osVersion, "macOS")) { # only on MAC
     if (missing(...)) { # if no message specified
@@ -35,10 +35,10 @@ notification <- function(..., sound = FALSE) {
 
   tryCatch({
     if (missing(...)) { # if no message specified
-    library(granatlib)
-    pushover(message="Work done!", user=readLines(paste0(path.package("granatlib"), "/pushover_user"), warn = FALSE), device = "iphone", app = readLines(paste0(path.package("granatlib"), "/pushover_app"), warn = FALSE))
+      library(granatlib)
+      pushoverr::pushover(message="Work done!", user=readLines(paste0(path.package("granatlib"), "/pushover_user"), warn = FALSE), device = "iphone", app = readLines(paste0(path.package("granatlib"), "/pushover_app"), warn = FALSE))
     } else {
-    pushover(message=..., user=readLines(paste0(path.package("granatlib"), "/pushover_user"), warn = FALSE), device = "iphone", app = readLines(paste0(path.package("granatlib"), "/pushover_app"), warn = FALSE))
+      pushoverr::pushover(message=..., user=readLines(paste0(path.package("granatlib"), "/pushover_user"), warn = FALSE), device = "iphone", app = readLines(paste0(path.package("granatlib"), "/pushover_app"), warn = FALSE))
     }
 
   }, error = \(e) {})
