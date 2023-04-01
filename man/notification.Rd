@@ -12,5 +12,5 @@ notification(..., sound = FALSE)
 \item{sound}{Should play a sound (default FALSE).}
 }
 \description{
-Sends a notification on Mac. Retrives a sound only on Windows.
+Sends a notification on Mac. Retrives a sound only on Windows. Also send pushover notification that requires to set your app and and user. Use `cat("<>", file = paste0(path.package("granatlib"), "/pushover_user"))` and `cat("<>", file = paste0(path.package("granatlib"), "/pushover_app"))` to do that.
 }

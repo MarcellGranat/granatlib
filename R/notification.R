@@ -1,6 +1,6 @@
 #' @title Send a notification on Mac.
 #'
-#' @description Sends a notification on Mac. Retrives a sound only on Windows.
+#' @description Sends a notification on Mac. Retrives a sound only on Windows. Also send pushover notification that requires to set your app and and user. Use `cat("<>", file = paste0(path.package("granatlib"), "/pushover_user"))` and `cat("<>", file = paste0(path.package("granatlib"), "/pushover_app"))` to do that.
 #' @param ... Message.
 #' @param sound Should play a sound (default FALSE).
 #'
@@ -32,4 +32,14 @@ notification <- function(..., sound = FALSE) {
       )
     }
   }
+
+  tryCatch({
+    if (missing(...)) { # if no message specified
+    library(granatlib)
+    pushover(message="Work done!", user=readLines(paste0(path.package("granatlib"), "/pushover_user"), warn = FALSE), device = "iphone", app = readLines(paste0(path.package("granatlib"), "/pushover_app"), warn = FALSE))
+    } else {
+    pushover(message=..., user=readLines(paste0(path.package("granatlib"), "/pushover_user"), warn = FALSE), device = "iphone", app = readLines(paste0(path.package("granatlib"), "/pushover_app"), warn = FALSE))
+    }
+
+  }, error = \(e) {})
 }
