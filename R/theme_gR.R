@@ -17,9 +17,10 @@ theme_gR <- function(base_theme = NULL) {
     if (.Platform$GUI == "RStudio") {
       base_theme <- ggdark::dark_theme_minimal() +
         theme(
-          plot.background = element_rect(fill = "#161616"),
-          panel.grid.major = element_line(color = "#dfe1e4"),
-          panel.grid.minor = element_line(color = "#dfe1e4")
+          plot.background = element_rect(fill = "#161616", color = "#161616"),
+          panel.border = element_blank(),
+          panel.grid.major = element_line(color = "grey25"),
+          panel.grid.minor = element_line(color = "grey25")
         )
     } else {
       base_theme <- ggplot2::theme_minimal()
