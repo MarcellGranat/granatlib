@@ -2,12 +2,13 @@
 #'
 #' @description Adds README, utils, board and .Rprofile files and updates them.
 #' @param board logical. Should a script for {pins} added?
+#' @param chatgpt logical. Should chatGPT add comments to the scripts?
 #' @examples
 #' repo_str()
 #' @export
 #'
 
-repo_str <- function(board = TRUE) {
+repo_str <- function(board = TRUE, chatgpt = TRUE) {
 
   cli::cli_h1("Structuriing the repository")
 
@@ -164,16 +165,16 @@ for (i in seq_along(file_names)) {
     TRUE ~ "..."
   )
 
-  if (de == "...") { # generate standard description with ChatGPT
+
+  if (de == "..." & chatgpt) { # generate standard description with ChatGPT
     if (Sys.getenv("OPENAI_API_KEY") == "") {
       stop('You need add your OPENAI_API_KEY: Sys.setenv("OPENAI_API_KEY" = "xxx"')
     }
     tryCatch({
-      q <- stringr::str_flatten(c("Describe what this code does. This will go to the README file of the repository, so it should be technical and written in markdown format:", readLines(file_names[i])), collapse = "\n")
+      q <- stringr::str_flatten(c("Describe what this code does. This will go to the README file of the repository, so it should be technical, but short. Use maximum 5 sentences. It should not contain codes from the file and do not use linebreaks or bullert points. If you refer to an object or function, put it in `` (e.g. `mean()`).:", readLines(file_names[i])), collapse = "\n")
       capture.output({ # avoid printing
         de <- chatgpt::ask_chatgpt(question = q)
       })
-      cli::cli_ul("ChatGPT commented to {file_names[i]}")
     }, error = \(e) cli::cli_alert_danger(e))
 
   }
