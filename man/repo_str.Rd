@@ -6,6 +6,9 @@
 \usage{
 repo_str(board = TRUE)
 }
+\arguments{
+\item{board}{logical. Should a script for {pins} added?}
+}
 \description{
 Adds README, utils, board and .Rprofile files and updates them.
 }

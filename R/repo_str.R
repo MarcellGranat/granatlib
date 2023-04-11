@@ -1,6 +1,7 @@
 #' @title Structure the repository based on Marcell's preferences.
 #'
 #' @description Adds README, utils, board and .Rprofile files and updates them.
+#' @param board logical. Should a script for {pins} added?
 #' @examples
 #' repo_str()
 #' @export
@@ -8,21 +9,23 @@
 
 repo_str <- function(board = TRUE) {
 
-  if (!".gitignore" %in% list.files(all.files = TRUE)) {
+  cli::cli_h1("Structuriing the repository")
+
+  if (!".gitignore" %in% list.files(all.files = TRUE)) { # exclude everything except numbered .R files (01-data.R)
     cat(c("*", "![-09][0-9]*.R", "!README.md", "!logo.png", ".Rproj.user"), file = ".gitignore", sep = "\n")
     granatlib::info("{'.gitignore'} created", "ok", add_time = FALSE)
+    cli::cli_alert_success(".gitignore created")
 
   } else if (!"*" %in% readLines(".gitignore")) {
-    cat(c("*", "![-09][0-9]*.R", "!README.md", "!logo.png", ".Rproj.user"), file = ".gitignore", sep = "\n")
-    granatlib::info("{'.gitignore'} updated", "warning", add_time = FALSE)
-
+    cat(c("*", "![-09][0-9]*.R", "!README.md", "!logo.png", ".Rproj.user"), file = ".gitignore", sep = "\n") # also README and logo
+    cli::cli_alert_info(".gitignore updated")
   }
 
-  utils_filename <- list.files() |>
+  utils_filename <- list.files() |> # check if utils exists
     purrr::keep(stringr::str_detect, pattern = "utils[.]R") |>
     dplyr::first()
 
-  if (is.na(utils_filename)) {
+  if (is.na(utils_filename)) { # my current utils set
     cat(c('if (!require(pacman, quietly = TRUE)) install.packages("pacman"); library(pacman)',
           'p_load("tidyverse", "pins", "currr")',
           'p_load_gh("marcellgranat/granatlib")',
@@ -30,15 +33,20 @@ repo_str <- function(board = TRUE) {
           '',
           'options(currr.folder = ".currr", currr.fill = FALSE)',
           '',
-          'theme_set(theme_gR())'
+          'theme_set(',
+          '\ttheme_bw() +',
+          '\t\ttheme(',
+          '\t\t\tlegend.position = "bottom"',
+          '\t\t)',
+          ')'
     ), file = "00-utils.R", sep = "\n")
 
     utils_filename <- "00-utils.R"
 
-    granatlib::info("{'00-utils.R'} created", "ok", add_time = FALSE)
+    cli::cli_alert_success("00-utils.R created")
   }
 
-  if (board) {
+  if (board) { # .read and .write files
 
     if (!"00-board.R" %in% list.files()) {
       cat(
@@ -84,9 +92,9 @@ repo_str <- function(board = TRUE) {
     }
   }
 
-if (!".Rprofile" %in% list.files(all.files = TRUE)) {
-  cat(c("library(stats)", paste0('source("', utils_filename,'")'), ifelse(board, 'source("00-board.R")', ''), "paint::mask_print()", "options(paint_palette = paint::brewer_dark2_7())"), file = ".Rprofile", sep = "\n")
-  granatlib::info("{'.Rprofile'} created", "ok", add_time = FALSE)
+if (!".Rprofile" %in% list.files(all.files = TRUE)) { # my current .Rprofile setup
+  cat(c("library(stats)", paste0('source("', utils_filename,'")'), ifelse(board, 'source("00-board.R")', ''), "ggplot2::theme_set(granatlib::gR_theme())"), file = ".Rprofile", sep = "\n")
+  cli::cli_alert_success(".Rprofile created")
 }
 
 if ("functions" %in% list.dirs() & !'walk(list.files("functions", full.names = TRUE), source)' %in% readLines(utils_filename)) {
@@ -95,13 +103,15 @@ if ("functions" %in% list.dirs() & !'walk(list.files("functions", full.names = T
     append('walk(list.files("functions", full.names = TRUE), source)') |>
     cat(utils_filename, sep = "\n")
 
-  granatlib::info("{functions} added to the utils file")
+  cli::cli_alert_success("functions added to the utils file")
 }
+
+cli::cli_h2("README") # update README
 
 if (!"README.md" %in% list.files()) {
   cat('# ', stringr::str_remove(rstudioapi::getActiveProject(), ".*/"), file = "README.md")
 
-  granatlib::info("{'README.md'} created", "ok", add_time = FALSE)
+  cli::cli_alert_success("README.md created")
 }
 
 readme <- readLines("README.md", warn = FALSE)
@@ -109,7 +119,7 @@ readme <- readLines("README.md", warn = FALSE)
 if ("logo.png" %in% list.files() & !stringr::str_detect(readLines("README.md", warn = FALSE)[1], "img src")) {
   readme[1] <- paste(readme[1], '<img src="logo.png" align="right" width="120" height="140"/>')
 
-  granatlib::info("{'logo'} added to README.md", "ok", add_time = FALSE)
+  cli::cli_alert_info("logo.png added to the README")
 }
 
 if (!"### Files of the repository" %in% readme) {
@@ -135,8 +145,14 @@ file_names <- list.files(pattern = "[0-9][0-9].*R") |>
   append(utils_filename, 0) |>
   rev()
 
+spinny <- cli::make_spinner(
+  which = "dots2",
+  template = "\033[35m{spin}\033[39m Generating comments to your \033[35mREADME.md\033[39m"
+)
+
 for (i in seq_along(file_names)) {
 
+  spinny$spin()
   l <- paste0("    ├── ", file_names[i])
   if (l %in% readme) {
     break
@@ -148,18 +164,34 @@ for (i in seq_along(file_names)) {
     TRUE ~ "..."
   )
 
+  if (de == "...") { # generate standard description with ChatGPT
+    if (Sys.getenv("OPENAI_API_KEY") == "") {
+      stop('You need add your OPENAI_API_KEY: Sys.setenv("OPENAI_API_KEY" = "xxx"')
+    }
+    tryCatch({
+      q <- stringr::str_flatten(c("Describe what this code does. This will go to the README file of the repository, so it should be technical and written in markdown format:", readLines(file_names[i])), collapse = "\n")
+      capture.output({ # avoid printing
+        de <- chatgpt::ask_chatgpt(question = q)
+      })
+      cli::cli_ul("ChatGPT commented to {file_names[i]}")
+    }, error = \(e) cli::cli_alert_danger(e))
+
+  }
+
   if (i == 1) {
     readme <- append(readme, values = c("", l, "", de, ""), after = last_fileline - 1)
   }  else {
     readme <- append(readme, values = c("", l, "", de, ""), after = which(readme == paste0("    ├── ", file_names[i - 1]))[1] - 1)
   }
-  granatlib::info("{'A new file'} added to the 'Files of the repository' s. in the README", add_time = FALSE)
+
 }
+
+spinny$finish()
 
 if (!identical(readme, readLines("README.md", warn = FALSE))) {
   cat(readme, file = "README.md", sep = "\n")
 
-  granatlib::info("{'README.md'} updated", add_time = FALSE)
+  cli::cli_alert_success("README updated!")
 }
 
 }
