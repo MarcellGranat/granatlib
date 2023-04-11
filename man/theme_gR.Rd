@@ -4,10 +4,7 @@
 \alias{theme_gR}
 \title{theme_gR}
 \usage{
-theme_gR(base_theme = NULL)
-}
-\arguments{
-\item{base_theme}{A theme to use}
+theme_gR()
 }
 \description{
 A theme that is conditionally dark or minimal (by default). Dark if you use it in RStudio.
