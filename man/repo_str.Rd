@@ -4,10 +4,12 @@
 \alias{repo_str}
 \title{Structure the repository based on Marcell's preferences.}
 \usage{
-repo_str(board = TRUE)
+repo_str(board = TRUE, chatgpt = TRUE)
 }
 \arguments{
 \item{board}{logical. Should a script for {pins} added?}
+
+\item{chatgpt}{logical. Should chatGPT add comments to the scripts?}
 }
 \description{
 Adds README, utils, board and .Rprofile files and updates them.

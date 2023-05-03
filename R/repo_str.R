@@ -94,7 +94,9 @@ repo_str <- function(board = TRUE, chatgpt = TRUE) {
   }
 
 if (!".Rprofile" %in% list.files(all.files = TRUE)) { # my current .Rprofile setup
-  cat(c("library(stats)", paste0('source("', utils_filename,'")'), ifelse(board, 'source("00-board.R")', ''), "ggplot2::theme_set(granatlib::gR_theme())"), file = ".Rprofile", sep = "\n")
+  cat(c("library(stats)", paste0('source("', utils_filename,'")'), ifelse(board, 'source("00-board.R")', ''), "ggplot2::theme_set(granatlib::gR_theme())",
+        'Sys.setenv("OPENAI_API_KEY" = readLines(paste0(path.package("granatlib"), "/openai_api_key"), warn = FALSE)) # for package {chatgpt}'
+        ), file = ".Rprofile", sep = "\n")
   cli::cli_alert_success(".Rprofile created")
 }
 
