@@ -173,7 +173,7 @@ for (i in seq_along(file_names)) {
       stop('You need add your OPENAI_API_KEY: Sys.setenv("OPENAI_API_KEY" = "xxx"')
     }
     tryCatch({
-      q <- stringr::str_flatten(c("Describe what this code does. This will go to the README file of the repository, so it should be technical, but short. Use maximum 5 sentences. It should not contain codes from the file and do not use linebreaks or bullert points. If you refer to an object or function, put it in `` (e.g. `mean()`).:", readLines(file_names[i])), collapse = "\n")
+      q <- stringr::str_flatten(c("Describe what this code does. This will go to the README file of the repository, so it should be technical, but short. Use maximum 5 sentences. It should not contain codes from the file and do not use linebreaks or bullet points. If you refer to an object or function, put it in `` (e.g. `mean()`).:", readLines(file_names[i])), collapse = "\n")
       capture.output({ # avoid printing
         de <- chatgpt::ask_chatgpt(question = q)
       })
